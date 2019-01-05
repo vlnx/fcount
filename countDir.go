@@ -1,9 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
-	"bufio"
 	"log"
 	"os"
 )
@@ -31,7 +31,10 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Println("Enter directory:")
 	scanner.Scan()
-	dir = scanner.Text()
+	var dir string = scanner.Text()
+	if dir[len(dir)-1] != '/' {
+		dir = dir + "/"
+	}
 	fmt.Println("Scanning directory:", dir)
 
 	var count int64 = 0
