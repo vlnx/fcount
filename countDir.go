@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -28,10 +27,7 @@ func countDir(dir string, count *int64) {
 }
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Println("Enter directory:")
-	scanner.Scan()
-	var dir string = scanner.Text()
+	var dir string = os.Args[1]
 	if dir[len(dir)-1] != '/' {
 		dir = dir + "/"
 	}
@@ -39,5 +35,5 @@ func main() {
 
 	var count int64 = 0
 	countDir(dir, &count)
-	log.Output(0, fmt.Sprintf("Count: %d", count))
+	fmt.Printf("Count: %d", count)
 }
