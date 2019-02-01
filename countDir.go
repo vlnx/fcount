@@ -27,7 +27,12 @@ func countDir(dir string, count *int64) {
 }
 
 func main() {
-	var dir string = os.Args[1]
+	var dir string
+	if len(os.Args) > 1 {
+		dir = os.Args[1]
+	} else {
+		dir = "."
+	}
 	if dir[len(dir)-1] != '/' {
 		dir = dir + "/"
 	}
@@ -35,5 +40,5 @@ func main() {
 
 	var count int64 = 0
 	countDir(dir, &count)
-	fmt.Printf("Count: %d", count)
+	fmt.Printf("Count: %d\n", count)
 }
