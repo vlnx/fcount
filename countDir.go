@@ -23,9 +23,9 @@ func countDir(dir string, count, folderCount *int64) {
 			countDir(dir+i.Name()+"/", count, folderCount)
 		} else {
 			*count++
-			if *count % 100 == 0 {
-				fmt.Println("Current file count:", *count)
-			}
+			//if *count % 100 == 0 {
+			//	fmt.Println("Current file count:", *count)
+			//}
 		}
 	}
 }
