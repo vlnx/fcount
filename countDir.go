@@ -15,13 +15,17 @@ func listFolder(folderDir string) []os.FileInfo {
 	return files
 }
 
-func countDir(dir string, count *int64) {
+func countDir(dir string, count, folderCount *int64) {
 	files := listFolder(dir)
 	for _, i := range files {
 		if i.IsDir() {
-			countDir(dir+i.Name()+"/", count)
+			*folderCount++
+			countDir(dir+i.Name()+"/", count, folderCount)
 		} else {
 			*count++
+			if *count % 100 == 0 {
+				fmt.Println("Current file count:", *count)
+			}
 		}
 	}
 }
@@ -31,7 +35,7 @@ func main() {
 	if len(os.Args) > 1 {
 		dir = os.Args[1]
 	} else {
-		dir = "."
+		dir = "./"
 	}
 	if dir[len(dir)-1] != '/' {
 		dir = dir + "/"
@@ -39,6 +43,7 @@ func main() {
 	fmt.Println("Scanning directory:", dir)
 
 	var count int64 = 0
-	countDir(dir, &count)
-	fmt.Printf("Count: %d\n", count)
+	var folderCount int64 = 0
+	countDir(dir, &count, &folderCount)
+	fmt.Printf("Files: %d\nFolders: %d\n", count, folderCount)
 }
