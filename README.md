@@ -31,6 +31,6 @@ Flag | Description
 **-d** | **Do not** count folders.
 
 
-Most flags are on as default, as I figured most people would wan't all three pieces of information most of the time.
+Most flags are on as default, as I figured most people would want all three pieces of information most of the time.
 
 Flags can be chained together, like this: `-rsd`, or done seperately: `-r -s -d`.
