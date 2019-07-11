@@ -34,7 +34,7 @@ fn main() -> io::Result<()> {
 
 
 pub fn print_usage_and_exit() {
-    println!("Usage: filec [options]... [directory]");
+    println!("Usage: fcount [options]... [directory]");
     println!("Count files, directories and sys");
 
     println!(
@@ -45,8 +45,8 @@ pub fn print_usage_and_exit() {
   -f\tdo not count files
 
 Examples:
-  filec -rs /my/directory\tTraverse '/my/directory' recursively and do not count symbolic links.
-  filec /my/directory\tCount all files, folders and symbolic links in this folder, without traversing sub folders.
+  fcount -rs /my/directory\tTraverse '/my/directory' recursively and do not count symbolic links.
+  fcount /my/directory\tCount all files, folders and symbolic links in this folder, without traversing sub folders.
 "   );
 
     process::exit(0);

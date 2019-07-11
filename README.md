@@ -1,4 +1,4 @@
-# filec - File, Folder and Symbolic Link Counter
+# fcount - File, Folder and Symbolic Link Counter
 
 ## Building
 
@@ -6,12 +6,12 @@ Build with
 ```bash
 cargo build --release
 ```
-And the executable will be in `target/release/filec`.
+And the executable will be in `target/release/fcount`.
 
 ## Usage
 
 ```bash
-filec [flags] [directory]
+fcount [flags] [directory]
 ```
 *(Arguments can be in any order.)*
 

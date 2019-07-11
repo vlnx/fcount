@@ -3,7 +3,7 @@
 macro_rules! error_message {
     ($error_code:expr) => { process::exit($error_code); };
     ($error_code:expr, $($arg:tt)*) => {
-        eprintln!("filec: {}", format_args!($($arg)*));
+        eprintln!("fcount: {}", format_args!($($arg)*));
         process::exit($error_code);
     };
 }

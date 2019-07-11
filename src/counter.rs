@@ -60,7 +60,7 @@ impl FileCounter {
             },
             Err(e) => {
                 if e.kind() == ErrorKind::PermissionDenied {
-                    eprintln!("filec: {}: Permission Denied", self.current_path.display());
+                    eprintln!("fcount: {}: Permission Denied", self.current_path.display());
                 } else {
                     error_message!(e.raw_os_error().unwrap(), "{}: {}", self.current_path.display(), e);
                 }
