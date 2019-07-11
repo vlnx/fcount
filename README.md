@@ -1,4 +1,4 @@
-# FileCount (filec)
+# filec - File, Folder and Symbolic Link Counter
 
 ## Building
 
