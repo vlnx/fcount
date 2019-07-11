@@ -11,7 +11,7 @@ And the executable will be in `target/release/filec`.
 ## Usage
 
 ```bash
-filec [directory] [flags]
+filec [flags] [directory]
 ```
 *(Arguments can be in any order.)*
 
