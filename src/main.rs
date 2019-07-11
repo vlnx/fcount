@@ -37,5 +37,17 @@ pub fn print_usage_and_exit() {
     println!("Usage: filec [options]... [directory]");
     println!("Count files, directories and sys");
 
+    println!(
+"
+  -r\tenter folders (traverse directory recursively)
+  -s\tdo not count symbolic links
+  -d\tdo not count folders
+  -f\tdo not count files
+
+Examples:
+  filec -rs /my/directory\tTraverse '/my/directory' recursively and do not count symbolic links.
+  filec /my/directory\tCount all files, folders and symbolic links in this folder, without traversing sub folders.
+"   );
+
     process::exit(0);
 }
