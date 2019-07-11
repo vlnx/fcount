@@ -44,10 +44,10 @@ impl FileCounter {
                     let pathbuf = sub.unwrap().path();
                     let f_type = fs::symlink_metadata(pathbuf.as_path()).unwrap().file_type();
 
-                    if f_type.is_symlink() {
+                    if f_type.is_symlink() && self.ops.count_sym_links {
                         self.sym_link_count += 1;
                     } else if f_type.is_dir() {
-                        self.dir_count += 1;
+                        if self.ops.count_folders { self.dir_count += 1; }
                         if self.ops.recursive {
                             self.current_path = pathbuf;
                             // Traverse the directory
