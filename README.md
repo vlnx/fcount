@@ -1,4 +1,4 @@
-# fcount - File, Folder and Symbolic Link Counter
+# fcount - File, folder and symbolic link counter
 
 ## Building
 
@@ -13,6 +13,7 @@ And the executable will be in `target/release/fcount`.
 ```bash
 fcount [flags] [directory]
 ```
+
 *(Arguments can be in any order.)*
 
 And it should output:
@@ -26,11 +27,23 @@ Flags include:
 
 Flag | Description
 --- | ---
-**-r** | **Do not** traverse recursively (only count in current folder).
+**-r** | Traverse recursively (count in sub folders, and sub folders of sub folders...).
 **-s** | **Do not** count symbolic links.
 **-d** | **Do not** count folders.
-
+**-f** | **Do not** count files.
+**--help** | Display usage.
 
 Most flags are on as default, as I figured most people would want all three pieces of information most of the time.
 
-Flags can be chained together, like this: `-rsd`, or done seperately: `-r -s -d`.
+Flags can be chained together (unless verbose like `--help`), like this: `-rsd`, or done seperately: `-r -s -d`.
+
+### Examples
+```bash
+fcount -rs /my/directory
+```
+Traverse '/my/directory' recursively and do not count symbolic links.
+
+```bash
+fcount /my/directory
+```
+Count all files, folders and symbolic links in this folder, without traversing sub folders.

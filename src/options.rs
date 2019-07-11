@@ -1,5 +1,4 @@
 use std::io;
-use std::env;
 use std::process;
 use std::path::{Path, PathBuf};
 
@@ -13,36 +12,32 @@ pub struct Options {
 }
 
 impl Options {
-    pub fn parse_arguments() -> io::Result<Options> {
+    pub fn parse_arguments(args: Vec<String>) -> io::Result<Options> {
         let mut ops = Options::default();
-        ops.args = env::args().collect();
+        ops.args = args;
 
         if ops.args.len() < 2 {
             error_message!(1, "Invalid number of arguments given: {}, expected at least 2", ops.args.len());
         }
 
         for arg in ops.args.iter() {
-            let ch = arg.chars();
-            let full = ch.as_str();
-            let chars = ch.collect::<Vec<_>>().into_boxed_slice();
+            match arg.as_str() {
+                "--help" => {
+                    crate::print_usage_and_exit()
+                },
+                _ => (),
+            }
 
-            if chars[0] == '-' {
-                if chars[1] == '-' {
-                    match full {
-                        "--help" => {    // Only one '-' will be removed at this point
-                            crate::print_usage_and_exit()
-                        },
-                        _ => (),
-                    }
-                } else {
-                    for c in chars.iter().skip(1) {
-                        match c {
-                            'r' => ops.recursive = true,
-                            's' => ops.count_sym_links = false,
-                            'd' => ops.count_folders = false,
-                            'f' => ops.count_files = false,
-                            x => { error_message!(1, "Invalid option -- '{}'", x); },
-                        }
+            let mut chars = arg.chars();
+            // If first character is '-', then it is a flag.
+            if chars.next().unwrap() == '-' {
+                for c in chars {    // '-' is removed by chars.next()
+                    match c {
+                        'r' => ops.recursive = true,
+                        's' => ops.count_sym_links = false,
+                        'd' => ops.count_folders = false,
+                        'f' => ops.count_files = false,
+                        x => { error_message!(1, "Invalid option -- '{}'", x); },
                     }
                 }
             } else {

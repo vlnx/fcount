@@ -5,30 +5,31 @@ mod counter;
 use std::fs;
 use std::io;
 use std::process;
+use std::env;
 
 use crate::options::Options;
 use crate::counter::FileCounter;
 
 fn main() -> io::Result<()> {
-    let ops = Options::parse_arguments()?;
+    let ops = Options::parse_arguments(
+        // Skip the "fcount" at the start.
+        env::args().skip(1).collect::<Vec<_>>()
+    )?;
 
     if !ops.count_files && !ops.count_folders && !ops.count_sym_links {
         error_message!(0);
     }
-
     let meta = fs::metadata(&ops.dir).unwrap_or_else(|err| {
         error_message!(err.raw_os_error().unwrap(), "{}: Could not open folder, {:?}", ops.dir.display(), err);
     });
-
     if meta.is_file() {
         error_message!(1, "{}: File given, expected directory.", ops.dir.display());
     }
 
     let mut file_counter = FileCounter::new(ops);
-
     file_counter.get_file_and_folder_count();
-    println!("{}", file_counter);
 
+    println!("{}", file_counter);
     Ok(())
 }
 
