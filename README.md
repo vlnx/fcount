@@ -11,7 +11,7 @@ And the executable will be in `target/release/fcount`.
 ## Usage
 
 ```bash
-fcount [flags] [directory]
+fcount [flags] <directory>
 ```
 
 *(Arguments can be in any order.)*
@@ -31,7 +31,7 @@ Flag | Description
 **-s** | **Do not** count symbolic links.
 **-d** | **Do not** count folders.
 **-f** | **Do not** count files.
-**--help** | Display usage.
+**-h, --help** | Display usage.
 
 All counts are enabled as default, as I figured most people want all counts most of the time.
 

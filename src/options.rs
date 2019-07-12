@@ -1,57 +1,26 @@
-use std::io;
 use std::path::{Path, PathBuf};
-use std::process;
 
+use structopt::StructOpt;
+
+#[derive(StructOpt, Debug)]
+#[structopt(name = "fcount")]
 pub struct Options {
     args: Vec<String>,
+    /// The starting directory
+    #[structopt(name = "directory", parse(from_os_str))]
     pub dir: PathBuf,
+    /// Enter folders (traverse directory recursively)
+    #[structopt(short = "r")]
     pub recursive: bool,
+    /// Do not count symbolic links
+    #[structopt(short = "s")]
     pub no_count_sym_links: bool,
+    /// Do not count folders
+    #[structopt(short = "d")]
     pub no_count_folders: bool,
+    /// Do not count files
+    #[structopt(short = "f")]
     pub no_count_files: bool,
-}
-
-impl Options {
-    pub fn parse_arguments(args: Vec<String>) -> io::Result<Options> {
-        let mut ops = Options::default();
-        ops.args = args;
-
-        if ops.args.len() < 2 {
-            error_message!(
-                1,
-                "Invalid number of arguments given: {}, expected at least 2",
-                ops.args.len()
-            );
-        }
-
-        for arg in ops.args.iter() {
-            match arg.as_str() {
-                "--help" => crate::print_usage_and_exit(),
-                _ => (),
-            }
-
-            let mut chars = arg.chars();
-            // If first character is '-', then it is a flag.
-            if chars.next().unwrap() == '-' {
-                for c in chars {
-                    // '-' is removed by chars.next()
-                    match c {
-                        'r' => ops.recursive = true,
-                        's' => ops.no_count_sym_links = true,
-                        'd' => ops.no_count_folders = true,
-                        'f' => ops.no_count_files = true,
-                        x => {
-                            error_message!(1, "Invalid option -- '{}'", x);
-                        }
-                    }
-                }
-            } else {
-                ops.dir = Path::new(arg).to_path_buf();
-            }
-        }
-
-        Ok(ops)
-    }
 }
 
 impl Default for Options {

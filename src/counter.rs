@@ -2,7 +2,6 @@ use std::fmt;
 use std::fs;
 use std::io::ErrorKind;
 use std::path::PathBuf;
-use std::process;
 
 use crate::options::Options;
 
