@@ -33,7 +33,7 @@ Flag | Description
 **-f** | **Do not** count files.
 **--help** | Display usage.
 
-Most flags are on as default, as I figured most people would want all three pieces of information most of the time.
+All counts are enabled as default, as I figured most people want all counts most of the time.
 
 Flags can be chained together (unless verbose like `--help`), like this: `-rsd`, or done seperately: `-r -s -d`.
 
