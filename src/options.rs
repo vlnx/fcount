@@ -1,11 +1,9 @@
 use std::path::{Path, PathBuf};
-
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "fcount")]
 pub struct Options {
-    args: Vec<String>,
     /// The starting directory
     #[structopt(name = "directory", parse(from_os_str))]
     pub dir: PathBuf,
@@ -21,12 +19,12 @@ pub struct Options {
     /// Do not count files
     #[structopt(short = "f")]
     pub no_count_files: bool,
+    // Show numbers only
 }
 
 impl Default for Options {
     fn default() -> Options {
         Options {
-            args: vec![],
             dir: Path::new("").to_path_buf(),
             recursive: false,
             no_count_folders: false,
