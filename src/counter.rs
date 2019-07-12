@@ -81,13 +81,22 @@ impl fmt::Display for FileCounter {
         let mut out_string = String::new();
 
         if !self.ops.no_count_files {
-            out_string += format!("Files: {}\n", self.file_count).as_ref();
+            if !self.ops.numbers_only {
+                out_string += "Files: ";
+            }
+            out_string += format!("{}\n", self.file_count).as_ref();
         }
         if !self.ops.no_count_folders {
-            out_string += format!("Folders: {}\n", self.folder_count).as_ref();
+            if !self.ops.numbers_only {
+                out_string += "Folders: ";
+            }
+            out_string += format!("{}\n", self.folder_count).as_ref();
         }
         if !self.ops.no_count_sym_links {
-            out_string += format!("Symbolic Links: {}\n", self.sym_link_count).as_ref();
+            if !self.ops.numbers_only {
+                out_string += "Symbolic Links: ";
+            }
+            out_string += format!("{}\n", self.sym_link_count).as_ref();
         }
         out_string.truncate(out_string.len() - 1); // Remove "\n" at the end
         write!(f, "{}", out_string)

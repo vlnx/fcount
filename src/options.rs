@@ -19,7 +19,9 @@ pub struct Options {
     /// Do not count files
     #[structopt(short = "f")]
     pub no_count_files: bool,
-    // Show numbers only
+    /// Show numbers only, seperated by new lines, in order: files, folders, symbolic links
+    #[structopt(short = "n", long = "--numbers")]
+    pub numbers_only: bool,
 }
 
 impl Default for Options {
@@ -30,6 +32,7 @@ impl Default for Options {
             no_count_folders: false,
             no_count_sym_links: false,
             no_count_files: false,
+            numbers_only: false,
         }
     }
 }
