@@ -49,3 +49,13 @@ Traverse '/my/directory' recursively and do not count symbolic links.
 fcount /my/directory
 ```
 Count all files, folders and symbolic links in this folder, without traversing sub folders.
+
+```bash
+fcount -rns /my/directory
+```
+
+Count all files and folders, and output like this:
+```bash
+<file count>
+<folder count>
+```
