@@ -42,7 +42,7 @@ Flags can be chained together (unless verbose like `--help`), like this: `-rsd`,
 ---
 ### Examples
 
-- Traverse '/my/directory' recursively and do not count symbolic links:
+#### Traverse '/my/directory' recursively and do not count symbolic links:
 ```bash
 fcount -rs /my/directory
 ```
@@ -52,7 +52,7 @@ Files: x
 Folders: y
 ```
 
-- Count all files, folders and symbolic links in this folder, without traversing sub folders:
+#### Count all files, folders and symbolic links in this folder, without traversing sub folders:
 ```bash
 fcount /my/directory
 ```
@@ -63,7 +63,7 @@ Folders: y
 Symbolic Links: z
 ```
 
-- Count all files and folders, without displaying 
+#### Count all files and folders, without displaying 
 ```bash
 fcount -rns /my/directory
 ```
