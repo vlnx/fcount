@@ -1,8 +1,8 @@
 use std::fmt;
-use std::process;
 use std::fs;
-use std::path::PathBuf;
 use std::io::ErrorKind;
+use std::path::PathBuf;
+use std::process;
 
 use crate::options::Options;
 
@@ -44,10 +44,12 @@ impl FileCounter {
                     let pathbuf = sub.unwrap().path();
                     let f_type = fs::symlink_metadata(pathbuf.as_path()).unwrap().file_type();
 
-                    if f_type.is_symlink() && self.ops.count_sym_links {
+                    if f_type.is_symlink() && !self.ops.no_count_sym_links {
                         self.sym_link_count += 1;
                     } else if f_type.is_dir() {
-                        if self.ops.count_folders { self.folder_count += 1; }
+                        if !self.ops.no_count_folders {
+                            self.folder_count += 1;
+                        }
                         if self.ops.recursive {
                             self.current_path = pathbuf;
                             // Traverse the directory
@@ -57,12 +59,17 @@ impl FileCounter {
                         self.file_count += 1;
                     }
                 }
-            },
+            }
             Err(e) => {
                 if e.kind() == ErrorKind::PermissionDenied {
                     eprintln!("fcount: {}: Permission Denied", self.current_path.display());
                 } else {
-                    error_message!(e.raw_os_error().unwrap(), "{}: {}", self.current_path.display(), e);
+                    error_message!(
+                        e.raw_os_error().unwrap(),
+                        "{}: {}",
+                        self.current_path.display(),
+                        e
+                    );
                 }
             }
         }
@@ -74,16 +81,16 @@ impl fmt::Display for FileCounter {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         let mut out_string = String::new();
 
-        if self.ops.count_files {
+        if !self.ops.no_count_files {
             out_string += format!("Files: {}\n", self.file_count).as_ref();
         }
-        if self.ops.count_folders {
+        if !self.ops.no_count_folders {
             out_string += format!("Folders: {}\n", self.folder_count).as_ref();
         }
-        if self.ops.count_sym_links {
+        if !self.ops.no_count_sym_links {
             out_string += format!("Symbolic Links: {}\n", self.sym_link_count).as_ref();
         }
-        out_string.truncate(out_string.len()-1);    // Remove "\n" at the end
+        out_string.truncate(out_string.len() - 1); // Remove "\n" at the end
         write!(f, "{}", out_string)
     }
 }
