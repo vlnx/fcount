@@ -39,23 +39,36 @@ All counts are enabled as default, as I figured most people want all counts most
 
 Flags can be chained together (unless verbose like `--help`), like this: `-rsd`, or done seperately: `-r -s -d`.
 
+---
 ### Examples
+
+- Traverse '/my/directory' recursively and do not count symbolic links:
 ```bash
 fcount -rs /my/directory
 ```
-Traverse '/my/directory' recursively and do not count symbolic links.
+Output:
+```bash
+Files: x
+Folders: y
+```
 
+- Count all files, folders and symbolic links in this folder, without traversing sub folders:
 ```bash
 fcount /my/directory
 ```
-Count all files, folders and symbolic links in this folder, without traversing sub folders.
+Output:
+```bash
+Files: x
+Folders: y
+Symbolic Links: z
+```
 
+- Count all files and folders, without displaying 
 ```bash
 fcount -rns /my/directory
 ```
-
-Count all files and folders, and output like this:
+Output:
 ```bash
-<file count>
-<folder count>
+x
+y
 ```
