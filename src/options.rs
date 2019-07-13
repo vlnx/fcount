@@ -1,11 +1,12 @@
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use structopt::StructOpt;
 
-#[derive(StructOpt, Debug)]
+#[derive(StructOpt, Debug, Default)]
 #[structopt(name = "fcount")]
+/// Count files, folders and symbolic links in a folder.
 pub struct Options {
-    /// The starting directory
-    #[structopt(name = "directory", parse(from_os_str))]
+    /// The starting directory. If empty, searches current directory.
+    #[structopt(name = "directory", default_value = ".", parse(from_os_str))]
     pub dir: PathBuf,
     /// Enter folders (traverse directory recursively)
     #[structopt(short = "r")]
@@ -22,17 +23,4 @@ pub struct Options {
     /// Show numbers only, seperated by new lines, in order: files, folders, symbolic links
     #[structopt(short = "n", long = "--numbers")]
     pub numbers_only: bool,
-}
-
-impl Default for Options {
-    fn default() -> Options {
-        Options {
-            dir: Path::new("").to_path_buf(),
-            recursive: false,
-            no_count_folders: false,
-            no_count_sym_links: false,
-            no_count_files: false,
-            numbers_only: false,
-        }
-    }
 }

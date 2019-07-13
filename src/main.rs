@@ -1,5 +1,3 @@
-extern crate structopt;
-
 #[macro_use]
 mod macros;
 mod counter;

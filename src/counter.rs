@@ -43,12 +43,11 @@ impl FileCounter {
                     let pathbuf = sub.unwrap().path();
                     let f_type = fs::symlink_metadata(pathbuf.as_path()).unwrap().file_type();
 
-                    if f_type.is_symlink() && !self.ops.no_count_sym_links {
+                    if f_type.is_symlink() {
                         self.sym_link_count += 1;
                     } else if f_type.is_dir() {
-                        if !self.ops.no_count_folders {
-                            self.folder_count += 1;
-                        }
+                        self.folder_count += 1;
+                        
                         if self.ops.recursive {
                             self.current_path = pathbuf;
                             // Traverse the directory
@@ -77,28 +76,32 @@ impl FileCounter {
 
 // For outputting result.
 impl fmt::Display for FileCounter {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
-        let mut out_string = String::new();
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut needs_newline = false;
 
-        if !self.ops.no_count_files {
-            if !self.ops.numbers_only {
-                out_string += "Files: ";
+        let mut new_line = |f: &mut fmt::Formatter| {
+            if needs_newline {
+                write!(f, "\n")
+            } else {
+                needs_newline = true;
+                Ok(())
             }
-            out_string += format!("{}\n", self.file_count).as_ref();
-        }
-        if !self.ops.no_count_folders {
+        };
+
+        let entries = [
+            (!self.ops.no_count_files, "Files", self.file_count),
+            (!self.ops.no_count_folders, "Folders", self.folder_count),
+            (!self.ops.no_count_sym_links, "Symbolic Links", self.sym_link_count),
+        ];
+
+        for (_, name, val) in entries.iter().filter(|(cond, _, _)| *cond) {
+            new_line(f)?;
             if !self.ops.numbers_only {
-                out_string += "Folders: ";
+                write!(f, "{}: ", name)?;
             }
-            out_string += format!("{}\n", self.folder_count).as_ref();
+            write!(f, "{}", val)?;
         }
-        if !self.ops.no_count_sym_links {
-            if !self.ops.numbers_only {
-                out_string += "Symbolic Links: ";
-            }
-            out_string += format!("{}\n", self.sym_link_count).as_ref();
-        }
-        out_string.truncate(out_string.len() - 1); // Remove "\n" at the end
-        write!(f, "{}", out_string)
+
+        Ok(())
     }
 }
