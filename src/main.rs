@@ -35,6 +35,11 @@ fn main() {
         Ok(_) => (),
         Err(e) => {
             eprintln!("fcount: error: {}", e);
+            if let Some(os_error) = e.raw_os_error() {
+                process::exit(os_error)
+            } else {
+                process::exit(1)
+            }
         }
     }
 }
