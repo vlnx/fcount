@@ -5,24 +5,13 @@ use std::path::PathBuf;
 
 use crate::options::Options;
 
+#[derive(Default)]
 pub struct FileCounter {
     file_count: usize,
     folder_count: usize,
     sym_link_count: usize,
     current_path: PathBuf,
     ops: Options,
-}
-
-impl Default for FileCounter {
-    fn default() -> FileCounter {
-        FileCounter {
-            file_count: 0,
-            folder_count: 0,
-            sym_link_count: 0,
-            current_path: PathBuf::new(),
-            ops: Options::default(),
-        }
-    }
 }
 
 impl FileCounter {
@@ -60,6 +49,7 @@ impl FileCounter {
             },
             Err(e) => {
                 if e.kind() == ErrorKind::PermissionDenied {
+                    // Do not want to return from function if it is just a permission error.
                     eprintln!("fcount: {}: Permission denied.", self.current_path.display());
                 } else {
                     return Err(e)
@@ -70,8 +60,6 @@ impl FileCounter {
         Ok(())
     }
 }
-
-
 
 // For outputting result.
 impl fmt::Display for FileCounter {
