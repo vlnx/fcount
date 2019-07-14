@@ -1,37 +1,40 @@
-#[macro_use]
-mod macros;
 mod counter;
 mod options;
 
-use std::io;
+use std::io::{self, ErrorKind};
 use std::fs;
+use std::process;
 
 use structopt::StructOpt;
 
 use crate::counter::FileCounter;
 use crate::options::Options;
 
-fn main() -> io::Result<()> {
+fn run() -> io::Result<()> {
     let ops = Options::from_args();
 
     if ops.no_count_files && ops.no_count_folders && ops.no_count_sym_links {
-        error_message!(0);
+        process::exit(0);
     }
-    let meta = fs::metadata(&ops.dir).unwrap_or_else(|err| {
-        error_message!(
-            err.raw_os_error().unwrap(),
-            "{}: Could not open folder, {:?}",
-            ops.dir.display(),
-            err
-        );
-    });
+    let meta = fs::metadata(&ops.dir)?;
+
     if meta.is_file() {
-        error_message!(1, "{}: File given, expected directory.", ops.dir.display());
+        return Err(io::Error::new(ErrorKind::Other, "Cheeseburger"))
     }
 
     let mut file_counter = FileCounter::new(ops);
-    file_counter.get_file_and_folder_count();
-
+    
+    file_counter.get_file_and_folder_count()?;
     println!("{}", file_counter);
+
     Ok(())
+}
+
+fn main() {
+    match run() {
+        Ok(_) => (),
+        Err(e) => {
+            eprintln!("fcount: error: {}", e);
+        }
+    }
 }

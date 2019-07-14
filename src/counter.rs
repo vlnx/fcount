@@ -1,6 +1,6 @@
 use std::fmt;
 use std::fs;
-use std::io::ErrorKind;
+use std::io::{self, ErrorKind};
 use std::path::PathBuf;
 
 use crate::options::Options;
@@ -34,14 +34,14 @@ impl FileCounter {
         }
     }
 
-    pub fn get_file_and_folder_count(&mut self) {
+    pub fn get_file_and_folder_count(&mut self) -> io::Result<()> {
         // If there was an error, if it was a permission erorr then just tell
         // the user and contine.
         match self.current_path.read_dir() {
-            Ok(path_read) => {
-                for sub in path_read {
-                    let pathbuf = sub.unwrap().path();
-                    let f_type = fs::symlink_metadata(pathbuf.as_path()).unwrap().file_type();
+            Ok(read_dir) => {
+                for sub in read_dir {
+                    let pathbuf = sub?.path();
+                    let f_type = fs::symlink_metadata(pathbuf.as_path())?.file_type();
 
                     if f_type.is_symlink() {
                         self.sym_link_count += 1;
@@ -51,28 +51,27 @@ impl FileCounter {
                         if self.ops.recursive {
                             self.current_path = pathbuf;
                             // Traverse the directory
-                            self.get_file_and_folder_count();
+                            self.get_file_and_folder_count()?;
                         }
                     } else {
                         self.file_count += 1;
                     }
                 }
-            }
+            },
             Err(e) => {
                 if e.kind() == ErrorKind::PermissionDenied {
-                    eprintln!("fcount: {}: Permission Denied", self.current_path.display());
+                    eprintln!("fcount: {}: Permission denied.", self.current_path.display());
                 } else {
-                    error_message!(
-                        e.raw_os_error().unwrap(),
-                        "{}: {}",
-                        self.current_path.display(),
-                        e
-                    );
+                    return Err(e)
                 }
             }
         }
+
+        Ok(())
     }
 }
+
+
 
 // For outputting result.
 impl fmt::Display for FileCounter {
