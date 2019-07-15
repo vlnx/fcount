@@ -11,6 +11,9 @@ pub struct Options {
     /// Enter folders (traverse directory recursively)
     #[structopt(short = "r")]
     pub recursive: bool,
+    /// Get total size of files (use -r to get size of folders too). -u for usage.
+    #[structopt(short = "u", long = "--size")]
+    pub get_size: bool,
     /// Do not count symbolic links
     #[structopt(short = "s")]
     pub no_count_sym_links: bool,

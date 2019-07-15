@@ -10,6 +10,7 @@ pub struct FileCounter {
     file_count: usize,
     folder_count: usize,
     sym_link_count: usize,
+    total_size: u64,
     current_path: PathBuf,
     ops: Options,
 }
@@ -30,7 +31,8 @@ impl FileCounter {
             Ok(read_dir) => {
                 for sub in read_dir {
                     let pathbuf = sub?.path();
-                    let f_type = fs::symlink_metadata(pathbuf.as_path())?.file_type();
+                    let metadata = fs::symlink_metadata(pathbuf.as_path())?;
+                    let f_type = metadata.file_type();
 
                     if f_type.is_symlink() {
                         self.sym_link_count += 1;
@@ -44,6 +46,9 @@ impl FileCounter {
                         }
                     } else {
                         self.file_count += 1;
+                        if self.ops.get_size {
+                            self.total_size += metadata.len();
+                        }
                     }
                 }
             },
@@ -89,6 +94,29 @@ impl fmt::Display for FileCounter {
             write!(f, "{}", val)?;
         }
 
+        if self.ops.get_size {
+            write!(f, "\nTotal Size: {}", get_display_for_size(self.total_size))?;
+        }
+
         Ok(())
+    }
+}
+
+fn get_display_for_size(size: u64) -> String {
+    let mut size_repr = size as f64;
+    let mut division_count: u8 = 0;
+
+    while size_repr > 1024.0 {
+        size_repr /= 1024.0;
+        division_count += 1;
+    }
+
+    match division_count {
+        1 => format!("{:.3} KiB", size_repr),
+        2 => format!("{:.3} MiB", size_repr),
+        3 => format!("{:.3} GiB", size_repr),
+        4 => format!("{:.3} TiB", size_repr),
+        5 => format!("{:.3} PiB", size_repr),
+        _ => format!("{} bytes", size)
     }
 }
