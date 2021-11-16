@@ -1,32 +1,42 @@
-mod counter;
-mod options;
-
-use std::io::{self, ErrorKind};
+use std::env;
 use std::fs;
+use std::io::{self, ErrorKind};
+use std::path::Path;
 use std::process;
 
-use structopt::StructOpt;
-
-use crate::counter::FileCounter;
-use crate::options::Options;
-
 fn run() -> io::Result<()> {
-    let ops = Options::from_args();
-
-    if ops.no_count_files && ops.no_count_folders && ops.no_count_sym_links {
-        process::exit(0);
+    let current_path = Path::new("./").to_path_buf();
+    if env::args().count() == 1 {
+        let mut directory_count = 0usize;
+        let mut file_count = 0usize;
+        match current_path.read_dir() {
+            Ok(read_dir) => {
+                for sub in read_dir {
+                    if fs::symlink_metadata(sub?.path().as_path())?
+                        .file_type()
+                        .is_dir()
+                    {
+                        directory_count += 1;
+                    } else {
+                        file_count += 1;
     }
-    let meta = fs::metadata(&ops.dir)?;
-
-    if meta.is_file() {
-        return Err(io::Error::new(ErrorKind::Other, "Cheeseburger"))
     }
-
-    let mut file_counter = FileCounter::new(ops);
-    
-    file_counter.get_file_and_folder_count()?;
-    println!("{}", file_counter);
-
+            }
+            Err(e) => {
+                if e.kind() == ErrorKind::PermissionDenied {
+                    // Do not want to return from function if it is just a permission error.
+                    eprintln!("fcount: Permission denied.");
+                } else {
+                    return Err(e);
+                }
+            }
+        }
+        println!("{} directories, {} files", directory_count, file_count);
+    } else {
+        // if called with any arguments at all, only count
+        // everything, don't try to tell the type
+        println!("{}", current_path.read_dir()?.count());
+    }
     Ok(())
 }
 
